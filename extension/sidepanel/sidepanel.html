@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Companion</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; }
+    
+    /* 状态栏 */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #1e1e1e;
+      color: #fff;
+      font-size: 12px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #666;
+    }
+    .status-dot.connected { background: #4caf50; }
+    .status-dot.connecting { background: #ffc107; animation: pulse 1s infinite; }
+    .status-dot.error { background: #f44336; }
+    
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    
+    /* Tab 栏 */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #333;
+      background: #252526;
+      overflow-x: auto;
+    }
+    .tab {
+      padding: 10px 16px;
+      color: #888;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-size: 13px;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab:hover { color: #fff; background: #2d2d2d; }
+    .tab.active { color: #fff; border-bottom-color: #0078d4; }
+    
+    /* 内容区 */
+    .content { height: calc(100vh - 80px); overflow-y: auto; }
+    .tab-content { display: none; padding: 12px; height: 100%; }
+    .tab-content.active { display: block; }
+    
+    /* 通用 */
+    .empty-state { color: #666; text-align: center; padding: 40px; }
+    .error-text { color: #f44336; }
+  </style>
+</head>
+<body>
+  <div class="status-bar">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText">Disconnected</span>
+    <span style="margin-left: auto; font-size: 11px; color: #888;">ws://localhost:9223</span>
+  </div>
+  
+  <div class="tabs">
+    <button class="tab active" data-tab="chat">Chat</button>
+    <button class="tab" data-tab="console">Console</button>
+    <button class="tab" data-tab="network">Network</button>
+    <button class="tab" data-tab="analysis">Analysis</button>
+    <button class="tab" data-tab="scripts">Scripts</button>
+    <button class="tab" data-tab="logs">Logs</button>
+  </div>
+  
+  <div class="content">
+    <div class="tab-content active" id="chat"><div class="empty-state">Chat 功能开发中...</div></div>
+    <div class="tab-content" id="console"><div class="empty-state">Console 日志将显示在这里</div></div>
+    <div class="tab-content" id="network"><div class="empty-state">Network 请求将显示在这里</div></div>
+    <div class="tab-content" id="analysis"><div class="empty-state">Analysis 功能开发中...</div></div>
+    <div class="tab-content" id="scripts"><div class="empty-state">Scripts 功能开发中...</div></div>
+    <div class="tab-content" id="logs"><div class="empty-state">Logs 将显示在这里</div></div>
+  </div>
+  
+  <script type="module" src="./sidepanel.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.env
+
+# Build outputs
+extension/dist/
+extension/node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+.pytest_cache/
+*.log
+
+# Playwright
+test-results/
+playwright-report/

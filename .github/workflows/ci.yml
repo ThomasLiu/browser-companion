@@ -1,0 +1,119 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Extension Unit Tests (Vitest)
+  extension-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: extension
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: extension/package-lock.json
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: TypeScript type check
+        run: npm run typecheck
+      
+      - name: Run unit tests
+        run: npm test -- --coverage
+      
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-coverage
+          path: extension/coverage/
+
+  # Python SDK Tests (pytest)
+  python-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agent-sdk/python
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install -e ".[dev]"
+      
+      - name: Run tests
+        run: pytest --cov=browser_companion --cov-report=xml tests/
+      
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-coverage
+          path: agent-sdk/python/coverage.xml
+
+  # E2E Tests (Playwright) - 条件执行
+  e2e-test:
+    needs: [extension-test, python-test]
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      
+      - name: Install Extension dependencies
+        run: cd extension && npm ci && npm run build
+      
+      - name: Run E2E tests
+        run: npx playwright test
+        env:
+          CI: true
+
+  # Build Check
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Build Extension
+        run: |
+          cd extension
+          npm ci
+          npm run build
+      
+      - name: Verify build output
+        run: |
+          ls -la extension/dist/
+          test -f extension/dist/background.js
+          test -f extension/dist/content/content.js
