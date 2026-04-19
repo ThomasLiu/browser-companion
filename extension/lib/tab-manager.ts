@@ -7,7 +7,7 @@
  * - S6: Tab 不存在 → 返回错误
  */
 
-import type { TabInfo } from './types.ts';
+import type { TabInfo } from './types';
 
 export class TabManager {
   private tabs: Map<number, TabInfo> = new Map();
