@@ -13,10 +13,11 @@
  * - network: 获取 Network 请求
  */
 
-import type { JsonRpcRequest, CommandResult } from './types.ts';
-import type { CdpClient } from './cdp.ts';
-import type { TabManager } from './tab-manager.ts';
-import type { Logger } from './logger.ts';
+import type { JsonRpcRequest, CommandResult } from './types';
+import type { CdpClient } from './cdp';
+import type { TabManager } from './tab-manager';
+import type { Logger } from './logger';
+import { TabNotFoundError } from './tab-manager';
 
 export class CommandRouter {
   private tabManager: TabManager;
@@ -199,4 +200,4 @@ export class CommandRouter {
 }
 
 // 重新导出 TabNotFoundError
-export { TabNotFoundError } from './tab-manager.ts';
+export { TabNotFoundError } from './tab-manager';

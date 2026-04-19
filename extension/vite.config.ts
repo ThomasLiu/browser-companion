@@ -8,8 +8,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         background: resolve(__dirname, 'background.ts'),
-        content: resolve(__dirname, 'content/content.ts'),
-        sidepanel: resolve(__dirname, 'sidepanel/sidepanel.ts'),
+        content: resolve(__dirname, 'content', 'content.ts'),
+        sidepanel: resolve(__dirname, 'sidepanel', 'sidepanel.ts'),
       },
       output: {
         entryFileNames: '[name].js',
@@ -17,9 +17,5 @@ export default defineConfig({
         format: 'es',
       },
     },
-  },
-  // 开发模式
-  server: {
-    port: 9223,
   },
 });
